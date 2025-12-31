@@ -23,7 +23,7 @@
 				<span class="space"/><span class="comments">* Hey Anshika, as you know, today feels like my expiry date ⏳</span><br />
 				<span class="space"/><span class="comments">* And before this year ends, I wanted to tell you something 🌙</span><br />
 				<span class="space"/><span class="comments">*/</span><br />
-				Thank you 💖<br />
+				Thank you <br />
 				Thank you for appreciating my efforts ✨<br />
 				<br />
 				I know you never asked me to do anything.<br />
@@ -121,21 +121,37 @@
 
 			audio.muted = false;
 			audio.volume = 0;
-			audio.play().catch(function(){});
 
-			var v = 0;
-			var fade = setInterval(function () {
-				if (v < 0.6) {
-					v += 0.02;
-					audio.volume = v;
-				} else {
-					clearInterval(fade);
-				}
-			}, 200);
+			function startFade() {
+				var v = 0;
+				var fade = setInterval(function () {
+					if (v < 0.6) {
+						v += 0.02;
+						audio.volume = v;
+					} else {
+						clearInterval(fade);
+					}
+				}, 200);
+			}
+
+			function playWithFade() {
+				audio.play().then(function () {
+					startFade();
+				}).catch(function () {
+					// Ignore; the user may try again via click/tap
+				});
+			}
+
+			// Try to autoplay
+			playWithFade();
+
+			// Also start on first user interaction (in case autoplay is blocked silently)
+			document.addEventListener('click', playWithFade, { once: true });
+			document.addEventListener('touchstart', playWithFade, { once: true });
 		});
 	</script>
-	<audio id="bgMusic" autoplay loop>
-	<source src="thousand years.mp3" type="audio/mpeg">
+	<audio id="bgMusic" autoplay loop playsinline>
+	<source src="Thousand years.mp3" type="audio/mpeg">
 	Your browser does not support the audio element.
 </audio>
 <script>
